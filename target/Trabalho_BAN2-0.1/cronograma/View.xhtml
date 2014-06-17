@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CronogramaViewDlg" widgetVar="CronogramaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCronogramaTitle}">
+            <h:form id="CronogramaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{cronogramaController.selected != null}">
+                        <h:outputText value="#{bundle.ViewCronogramaLabel_idCronograma}"/>
+                        <h:outputText value="#{cronogramaController.selected.idCronograma}" title="#{bundle.ViewCronogramaTitle_idCronograma}"/>
+                        <h:outputText value="#{bundle.ViewCronogramaLabel_chParcial}"/>
+                        <h:outputText value="#{cronogramaController.selected.chParcial}" title="#{bundle.ViewCronogramaTitle_chParcial}"/>
+                        <h:outputText value="#{bundle.ViewCronogramaLabel_conteudo}"/>
+                        <h:outputText value="#{cronogramaController.selected.conteudo}" title="#{bundle.ViewCronogramaTitle_conteudo}"/>
+                        <h:outputText value="#{bundle.ViewCronogramaLabel_avaliacao}"/>
+                        <h:outputText value="#{cronogramaController.selected.avaliacao}" title="#{bundle.ViewCronogramaTitle_avaliacao}"/>
+                        <h:outputText value="#{bundle.ViewCronogramaLabel_planoidPlano}"/>
+                        <h:outputText value="#{cronogramaController.selected.planoidPlano}" title="#{bundle.ViewCronogramaTitle_planoidPlano}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="CronogramaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

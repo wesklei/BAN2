@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="BibliografiacomplementarEditDlg" widgetVar="BibliografiacomplementarEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditBibliografiacomplementarTitle}">
+            <h:form id="BibliografiacomplementarEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{bibliografiacomplementarController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditBibliografiacomplementarLabel_idBibliografiaComplementar}" for="idBibliografiaComplementar" />
+                        <p:inputText id="idBibliografiaComplementar" value="#{bibliografiacomplementarController.selected.idBibliografiaComplementar}" title="#{bundle.EditBibliografiacomplementarTitle_idBibliografiaComplementar}" required="true" requiredMessage="#{bundle.EditBibliografiacomplementarRequiredMessage_idBibliografiaComplementar}"/>
+                        <p:outputLabel value="#{bundle.EditBibliografiacomplementarLabel_autor}" for="autor" />
+                        <p:inputText id="autor" value="#{bibliografiacomplementarController.selected.autor}" title="#{bundle.EditBibliografiacomplementarTitle_autor}" required="true" requiredMessage="#{bundle.EditBibliografiacomplementarRequiredMessage_autor}"/>
+                        <p:outputLabel value="#{bundle.EditBibliografiacomplementarLabel_titulo}" for="titulo" />
+                        <p:inputText id="titulo" value="#{bibliografiacomplementarController.selected.titulo}" title="#{bundle.EditBibliografiacomplementarTitle_titulo}" required="true" requiredMessage="#{bundle.EditBibliografiacomplementarRequiredMessage_titulo}"/>
+                        <p:outputLabel value="#{bundle.EditBibliografiacomplementarLabel_ano}" for="ano" />
+                        <p:inputText id="ano" value="#{bibliografiacomplementarController.selected.ano}" title="#{bundle.EditBibliografiacomplementarTitle_ano}" required="true" requiredMessage="#{bundle.EditBibliografiacomplementarRequiredMessage_ano}"/>
+                        <p:outputLabel value="#{bundle.EditBibliografiacomplementarLabel_planoidPlano}" for="planoidPlano" />
+                        <p:selectOneMenu id="planoidPlano" value="#{bibliografiacomplementarController.selected.planoidPlano}" required="true" requiredMessage="#{bundle.EditBibliografiacomplementarRequiredMessage_planoidPlano}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{planoController.itemsAvailableSelectOne}"
+                                           var="planoidPlanoItem"
+                                           itemValue="#{planoidPlanoItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{bibliografiacomplementarController.update}" value="#{bundle.Save}" update="display,:BibliografiacomplementarListForm:datalist,:growl" oncomplete="handleSubmit(args, 'BibliografiacomplementarEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="BibliografiacomplementarEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

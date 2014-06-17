@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="BibliografiageralViewDlg" widgetVar="BibliografiageralViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewBibliografiageralTitle}">
+            <h:form id="BibliografiageralViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{bibliografiageralController.selected != null}">
+                        <h:outputText value="#{bundle.ViewBibliografiageralLabel_idBibliografiaGeral}"/>
+                        <h:outputText value="#{bibliografiageralController.selected.idBibliografiaGeral}" title="#{bundle.ViewBibliografiageralTitle_idBibliografiaGeral}"/>
+                        <h:outputText value="#{bundle.ViewBibliografiageralLabel_autor}"/>
+                        <h:outputText value="#{bibliografiageralController.selected.autor}" title="#{bundle.ViewBibliografiageralTitle_autor}"/>
+                        <h:outputText value="#{bundle.ViewBibliografiageralLabel_titulo}"/>
+                        <h:outputText value="#{bibliografiageralController.selected.titulo}" title="#{bundle.ViewBibliografiageralTitle_titulo}"/>
+                        <h:outputText value="#{bundle.ViewBibliografiageralLabel_ano}"/>
+                        <h:outputText value="#{bibliografiageralController.selected.ano}" title="#{bundle.ViewBibliografiageralTitle_ano}"/>
+                        <h:outputText value="#{bundle.ViewBibliografiageralLabel_disciplinaidDisciplina}"/>
+                        <h:outputText value="#{bibliografiageralController.selected.disciplinaidDisciplina}" title="#{bundle.ViewBibliografiageralTitle_disciplinaidDisciplina}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="BibliografiageralViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

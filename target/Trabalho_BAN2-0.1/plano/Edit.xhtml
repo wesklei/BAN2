@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PlanoEditDlg" widgetVar="PlanoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditPlanoTitle}">
+            <h:form id="PlanoEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{planoController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditPlanoLabel_idPlano}" for="idPlano" />
+                        <p:inputText id="idPlano" value="#{planoController.selected.idPlano}" title="#{bundle.EditPlanoTitle_idPlano}" required="true" requiredMessage="#{bundle.EditPlanoRequiredMessage_idPlano}"/>
+                        <p:outputLabel value="#{bundle.EditPlanoLabel_objetivoGeral}" for="objetivoGeral" />
+                        <p:inputText id="objetivoGeral" value="#{planoController.selected.objetivoGeral}" title="#{bundle.EditPlanoTitle_objetivoGeral}" required="true" requiredMessage="#{bundle.EditPlanoRequiredMessage_objetivoGeral}"/>
+                        <p:outputLabel value="#{bundle.EditPlanoLabel_objetivoEspecifico}" for="objetivoEspecifico" />
+                        <p:inputText id="objetivoEspecifico" value="#{planoController.selected.objetivoEspecifico}" title="#{bundle.EditPlanoTitle_objetivoEspecifico}" required="true" requiredMessage="#{bundle.EditPlanoRequiredMessage_objetivoEspecifico}"/>
+                        <p:outputLabel value="#{bundle.EditPlanoLabel_metodologia}" for="metodologia" />
+                        <p:inputText id="metodologia" value="#{planoController.selected.metodologia}" title="#{bundle.EditPlanoTitle_metodologia}" required="true" requiredMessage="#{bundle.EditPlanoRequiredMessage_metodologia}"/>
+                        <p:outputLabel value="#{bundle.EditPlanoLabel_criterios}" for="criterios" />
+                        <p:inputText id="criterios" value="#{planoController.selected.criterios}" title="#{bundle.EditPlanoTitle_criterios}" required="true" requiredMessage="#{bundle.EditPlanoRequiredMessage_criterios}"/>
+                        <p:outputLabel value="#{bundle.EditPlanoLabel_disciplinaidDisciplina}" for="disciplinaidDisciplina" />
+                        <p:selectOneMenu id="disciplinaidDisciplina" value="#{planoController.selected.disciplinaidDisciplina}" required="true" requiredMessage="#{bundle.EditPlanoRequiredMessage_disciplinaidDisciplina}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{disciplinaController.itemsAvailableSelectOne}"
+                                           var="disciplinaidDisciplinaItem"
+                                           itemValue="#{disciplinaidDisciplinaItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{planoController.update}" value="#{bundle.Save}" update="display,:PlanoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'PlanoEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="PlanoEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
