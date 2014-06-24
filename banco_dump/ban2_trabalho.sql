@@ -3,18 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 16, 2014 at 11:53 PM
+-- Generation Time: Jun 24, 2014 at 05:26 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `ban2_trabalho`
@@ -27,56 +21,20 @@ DELIMITER $$
 -- Functions
 --
 DROP FUNCTION IF EXISTS `carga_horario_periodo`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `carga_horario_periodo`(id_periodo INT ) RETURNS int(11)
+CREATE DEFINER=`root`@`localhost` FUNCTION `carga_horario_periodo`() RETURNS int(11)
     DETERMINISTIC
 BEGIN
 	DECLARE total INT;
-	SELECT SUM(chTotal) INTO total FROM disciplina,plano,periodo WHERE disciplina.idDisciplina = plano.Disciplina_idDisciplina AND plano.idPlano=periodo.Plano_idPlano AND idPeriodo = id_periodo;
+	SELECT SUM(chTotal) INTO total FROM disciplina;
 	RETURN total;
-END$$
-
-DROP FUNCTION IF EXISTS `todosPrerequisitos`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `todosPrerequisitos`(id_disciplina INT ) RETURNS int(11)
-    DETERMINISTIC
-BEGIN
-	DECLARE allPrerequisitos varchar(1000);
-	SELECT GROUP_CONCAT(PreRequisitos_idPreRequisitos) INTO allPrerequisitos FROM disciplina_has_prerequisitos WHERE disciplina_has_prerequisitos.Disciplina_idDisciplina =  id_disciplina AND disciplina_has_prerequisitos.PreRequisitos_idPreRequisitos=PreRequisitos_idPreRequisitos;
-	RETURN allPrerequisitos;
 END$$
 
 DROP FUNCTION IF EXISTS `todos_prerequisito`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `todos_prerequisito`(id_disciplina INT ) RETURNS int(11)
+CREATE DEFINER=`root`@`localhost` FUNCTION `todos_prerequisito`(`id_disciplina` INT) RETURNS varchar(1000) CHARSET utf8
     DETERMINISTIC
 BEGIN
 	DECLARE allPrerequisitos varchar(1000);
 	SELECT GROUP_CONCAT(PreRequisitos_idPreRequisitos) INTO allPrerequisitos FROM disciplina_has_prerequisitos WHERE disciplina_has_prerequisitos.Disciplina_idDisciplina =  id_disciplina AND disciplina_has_prerequisitos.PreRequisitos_idPreRequisitos=PreRequisitos_idPreRequisitos;
-	RETURN allPrerequisitos;
-END$$
-
-DROP FUNCTION IF EXISTS `todos_prerequisitos`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `todos_prerequisitos`(id_disciplina INT ) RETURNS int(11)
-    DETERMINISTIC
-BEGIN
-	DECLARE allPrerequisitos varchar(1000);
-	SELECT GROUP_CONCAT(PreRequisitos_idPreRequisitos) INTO allPrerequisitos FROM disciplina_has_prerequisitos WHERE disciplina_has_prerequisitos.Disciplina_idDisciplina =  id_disciplina AND disciplina_has_prerequisitos.PreRequisitos_idPreRequisitos=PreRequisitos_idPreRequisitos;
-	RETURN total;
-END$$
-
-DROP FUNCTION IF EXISTS `todo_pprerequisitos`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `todo_pprerequisitos`(id_disciplina INT ) RETURNS int(11)
-    DETERMINISTIC
-BEGIN
-	DECLARE allPrerequisitos varchar(1000);
-	SELECT PreRequisitos_idPreRequisitos INTO allPrerequisitos FROM disciplina_has_prerequisitos WHERE disciplina_has_prerequisitos.Disciplina_idDisciplina =  id_disciplina AND disciplina_has_prerequisitos.PreRequisitos_idPreRequisitos=PreRequisitos_idPreRequisitos;
-	RETURN allPrerequisitos;
-END$$
-
-DROP FUNCTION IF EXISTS `todo_Prerequisitos`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `todo_Prerequisitos`(id_disciplina INT ) RETURNS int(11)
-    DETERMINISTIC
-BEGIN
-	DECLARE allPrerequisitos varchar(1000);
-	SELECT GROUP_CONCAT(PreRequisitos_idPreRequisitos),PreRequisitos_idPreRequisitos INTO allPrerequisitos FROM disciplina_has_prerequisitos WHERE disciplina_has_prerequisitos.Disciplina_idDisciplina =  id_disciplina AND disciplina_has_prerequisitos.PreRequisitos_idPreRequisitos=PreRequisitos_idPreRequisitos;
 	RETURN allPrerequisitos;
 END$$
 
@@ -86,8 +44,6 @@ DELIMITER ;
 
 --
 -- Table structure for table `bibliografiacomplementar`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `bibliografiacomplementar`;
@@ -103,8 +59,9 @@ CREATE TABLE IF NOT EXISTS `bibliografiacomplementar` (
 -- Dumping data for table `bibliografiacomplementar`
 --
 
-INSERT INTO `bibliografiacomplementar` (`idBibliografiaComplementar`, `Plano_idPlano`, `autor`, `titulo`, `ano`) VALUES(0, 0, 'BRUSILOVSKY', 'BIG DATA', 2001);
-INSERT INTO `bibliografiacomplementar` (`idBibliografiaComplementar`, `Plano_idPlano`, `autor`, `titulo`, `ano`) VALUES(1, 0, 'a', 'a', 2000);
+INSERT INTO `bibliografiacomplementar` (`idBibliografiaComplementar`, `Plano_idPlano`, `autor`, `titulo`, `ano`) VALUES
+(0, 0, 'BRUSILOVSKY', 'BIG DATA', 2001),
+(1, 0, 'a', 'a', 2000);
 
 --
 -- Triggers `bibliografiacomplementar`
@@ -116,7 +73,6 @@ CREATE TRIGGER `mesma_bibliografia_complementar` BEFORE INSERT ON `bibliografiac
     IF (SELECT COUNT(*) FROM bibliografiacomplementar WHERE autor = NEW.autor AND titulo = NEW.titulo AND ano = NEW.ano) > 0 THEN
        SET NEW='Erro: Bibliografia Comnplementar já existe';
        # apenas para teste
-       INSERT INTO bibliografiacomplementar VALUES (NULL, 'ERRO', 999);
     END IF;
 END
 //
@@ -127,8 +83,6 @@ DELIMITER ;
 --
 -- Table structure for table `bibliografiageral`
 --
--- Creation: Jun 17, 2014 at 02:43 AM
---
 
 DROP TABLE IF EXISTS `bibliografiageral`;
 CREATE TABLE IF NOT EXISTS `bibliografiageral` (
@@ -137,14 +91,15 @@ CREATE TABLE IF NOT EXISTS `bibliografiageral` (
   `autor` varchar(40) NOT NULL,
   `titulo` varchar(40) NOT NULL,
   `ano` int(4) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `bibliografiageral`
 --
 
-INSERT INTO `bibliografiageral` (`idBibliografiaGeral`, `Disciplina_idDisciplina`, `autor`, `titulo`, `ano`) VALUES(0, 0, 'GASPARINI', 'Modelagem do Usuário no Contexto Educaci', 2011);
-INSERT INTO `bibliografiageral` (`idBibliografiaGeral`, `Disciplina_idDisciplina`, `autor`, `titulo`, `ano`) VALUES(2, 0, 'a', 'a', 2000);
+INSERT INTO `bibliografiageral` (`idBibliografiaGeral`, `Disciplina_idDisciplina`, `autor`, `titulo`, `ano`) VALUES
+(0, 0, 'GASPARINI', 'Modelagem do Usuário no Contexto Educaci', 2011),
+(3, 0, 'b', 'b', 0);
 
 --
 -- Triggers `bibliografiageral`
@@ -166,8 +121,6 @@ DELIMITER ;
 --
 -- Table structure for table `cronograma`
 --
--- Creation: Jun 17, 2014 at 02:43 AM
---
 
 DROP TABLE IF EXISTS `cronograma`;
 CREATE TABLE IF NOT EXISTS `cronograma` (
@@ -176,20 +129,20 @@ CREATE TABLE IF NOT EXISTS `cronograma` (
   `chParcial` int(2) NOT NULL,
   `conteudo` varchar(250) NOT NULL,
   `avaliacao` varchar(250) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `cronograma`
 --
 
-INSERT INTO `cronograma` (`idCronograma`, `Plano_idPlano`, `chParcial`, `conteudo`, `avaliacao`) VALUES(0, 0, 5, 'DIAGRAMA UML', 'A1');
+INSERT INTO `cronograma` (`idCronograma`, `Plano_idPlano`, `chParcial`, `conteudo`, `avaliacao`) VALUES
+(0, 0, 5, 'DIAGRAMA UML', 'A1'),
+(1, 0, 40, '111', '1111');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `curso`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `curso`;
@@ -197,20 +150,20 @@ CREATE TABLE IF NOT EXISTS `curso` (
 `idCurso` int(11) NOT NULL,
   `Departamento_idDepartamento` int(11) NOT NULL,
   `nome_curso` varchar(40) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `curso`
 --
 
-INSERT INTO `curso` (`idCurso`, `Departamento_idDepartamento`, `nome_curso`) VALUES(1, 0, 'Bacharelado em Ciência da Computação');
+INSERT INTO `curso` (`idCurso`, `Departamento_idDepartamento`, `nome_curso`) VALUES
+(1, 0, 'Bacharelado em Ciência da Computação'),
+(2, 0, 'Curso teste 22222');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `departamento`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `departamento`;
@@ -223,14 +176,13 @@ CREATE TABLE IF NOT EXISTS `departamento` (
 -- Dumping data for table `departamento`
 --
 
-INSERT INTO `departamento` (`idDepartamento`, `nome_dep`) VALUES(0, 'Departamento de Ciência da Computação');
+INSERT INTO `departamento` (`idDepartamento`, `nome_dep`) VALUES
+(0, 'Departamento de Ciência da Computação');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `disciplina`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `disciplina`;
@@ -243,20 +195,35 @@ CREATE TABLE IF NOT EXISTS `disciplina` (
   `chTeorica` int(2) NOT NULL,
   `chPratica` int(2) NOT NULL,
   `ementa` varchar(250) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `disciplina`
 --
 
-INSERT INTO `disciplina` (`idDisciplina`, `Curso_idCurso`, `nome_disc`, `sigla`, `chTotal`, `chTeorica`, `chPratica`, `ementa`) VALUES(0, 1, 'Linguagem de Programação', 'LPG0001', 60, 30, 30, 'Conceitos Básicos, Conceitos Avançados');
+INSERT INTO `disciplina` (`idDisciplina`, `Curso_idCurso`, `nome_disc`, `sigla`, `chTotal`, `chTeorica`, `chPratica`, `ementa`) VALUES
+(0, 1, 'Linguagem de Programação', 'LPG0001', 60, 30, 30, 'Conceitos Básicos, Conceitos Avançados'),
+(1, 1, 'teste', 'ttt', 30, 20, 10, 'rrrr'),
+(2, 1, '1111', '111', 30, 20, 10, '1111');
+
+--
+-- Triggers `disciplina`
+--
+DROP TRIGGER IF EXISTS `verifica_carga_total`;
+DELIMITER //
+CREATE TRIGGER `verifica_carga_total` BEFORE INSERT ON `disciplina`
+ FOR EACH ROW BEGIN
+    IF (NEW.chTotal > 120)  THEN
+       SET NEW='Erro: Carga horaria total nao pode ser maior que 120';      
+    END IF;
+END
+//
+DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `disciplina_has_prerequisitos`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `disciplina_has_prerequisitos`;
@@ -269,22 +236,21 @@ CREATE TABLE IF NOT EXISTS `disciplina_has_prerequisitos` (
 -- Dumping data for table `disciplina_has_prerequisitos`
 --
 
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 0);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 0);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 0);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 1);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 2);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 0);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 1);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 2);
-INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES(0, 3);
+INSERT INTO `disciplina_has_prerequisitos` (`Disciplina_idDisciplina`, `PreRequisitos_idPreRequisitos`) VALUES
+(0, 0),
+(0, 0),
+(0, 0),
+(0, 1),
+(0, 2),
+(0, 0),
+(0, 1),
+(0, 2),
+(0, 3);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `periodo`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `periodo`;
@@ -293,20 +259,20 @@ CREATE TABLE IF NOT EXISTS `periodo` (
   `Plano_idPlano` int(11) NOT NULL,
   `ano` int(4) NOT NULL,
   `semestre` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `periodo`
 --
 
-INSERT INTO `periodo` (`idPeriodo`, `Plano_idPlano`, `ano`, `semestre`) VALUES(0, 0, 2012, 2);
+INSERT INTO `periodo` (`idPeriodo`, `Plano_idPlano`, `ano`, `semestre`) VALUES
+(0, 0, 2012, 2),
+(1, 0, 2013, 2);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `plano`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `plano`;
@@ -317,20 +283,20 @@ CREATE TABLE IF NOT EXISTS `plano` (
   `objetivoEspecifico` varchar(255) NOT NULL,
   `metodologia` varchar(255) NOT NULL,
   `criterios` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `plano`
 --
 
-INSERT INTO `plano` (`idPlano`, `Disciplina_idDisciplina`, `objetivoGeral`, `objetivoEspecifico`, `metodologia`, `criterios`) VALUES(0, 0, 'Objetivo dessa disciplina é apresentar diversos...', 'Aprender os conceitos de programação estruturada', 'A metodologia baseia-se em teoria e prática', 'Critérios são: AV1, E2, AV2, E1');
+INSERT INTO `plano` (`idPlano`, `Disciplina_idDisciplina`, `objetivoGeral`, `objetivoEspecifico`, `metodologia`, `criterios`) VALUES
+(0, 0, 'Objetivo dessa disciplina é apresentar diversos...', 'Aprender os conceitos de programação estruturada', 'A metodologia baseia-se em teoria e prática', 'Critérios são: AV1, E2, AV2, E1'),
+(2, 0, 'obj', 'obje', 'ooo', 'oooo');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `prerequisitos`
---
--- Creation: Jun 17, 2014 at 02:43 AM
 --
 
 DROP TABLE IF EXISTS `prerequisitos`;
@@ -342,10 +308,11 @@ CREATE TABLE IF NOT EXISTS `prerequisitos` (
 -- Dumping data for table `prerequisitos`
 --
 
-INSERT INTO `prerequisitos` (`idPreRequisitos`) VALUES(0);
-INSERT INTO `prerequisitos` (`idPreRequisitos`) VALUES(1);
-INSERT INTO `prerequisitos` (`idPreRequisitos`) VALUES(2);
-INSERT INTO `prerequisitos` (`idPreRequisitos`) VALUES(3);
+INSERT INTO `prerequisitos` (`idPreRequisitos`) VALUES
+(0),
+(1),
+(2),
+(3);
 
 --
 -- Indexes for dumped tables
@@ -424,17 +391,17 @@ MODIFY `idBibliografiaComplementar` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREME
 -- AUTO_INCREMENT for table `bibliografiageral`
 --
 ALTER TABLE `bibliografiageral`
-MODIFY `idBibliografiaGeral` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `idBibliografiaGeral` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `cronograma`
 --
 ALTER TABLE `cronograma`
-MODIFY `idCronograma` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `idCronograma` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `curso`
 --
 ALTER TABLE `curso`
-MODIFY `idCurso` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `idCurso` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `departamento`
 --
@@ -444,17 +411,17 @@ MODIFY `idDepartamento` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `disciplina`
 --
 ALTER TABLE `disciplina`
-MODIFY `idDisciplina` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `idDisciplina` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `periodo`
 --
 ALTER TABLE `periodo`
-MODIFY `idPeriodo` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `idPeriodo` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `plano`
 --
 ALTER TABLE `plano`
-MODIFY `idPlano` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `idPlano` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `prerequisitos`
 --
@@ -512,7 +479,3 @@ ADD CONSTRAINT `periodo_ibfk_1` FOREIGN KEY (`Plano_idPlano`) REFERENCES `plano`
 --
 ALTER TABLE `plano`
 ADD CONSTRAINT `plano_ibfk_1` FOREIGN KEY (`Disciplina_idDisciplina`) REFERENCES `disciplina` (`idDisciplina`);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
